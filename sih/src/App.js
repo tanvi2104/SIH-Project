@@ -1,9 +1,26 @@
 import React, { Component } from 'react';
 import Navigation from "./components/Navigation/Navigation";
-//import AboutUs from "./components/AboutUs/AboutUs";
 import Rank from "./components/Rank/Rank";
+import axios from 'axios';
 import ImageLinkForm from "./components/ImageLinkForm/ImageLinkForm";
 import './App.css';
+
+const app = new axios.App({ 
+  method: "POST",
+    url: "https://detect.roboflow.com/tree-top-view/2",
+    params: {
+        api_key: "rdlxQ2kUnRiOkQO6wjjD",
+        image: "IMAGE_URL"
+    }
+})
+.then(function(response) {
+    console.log(response.data);
+})
+.catch(function(error) {
+    console.log(error.message);
+});
+
+
 
 class App extends Component{
   constructor()
@@ -11,19 +28,27 @@ class App extends Component{
     super();
     this.state={
       input:'',
-      route:'signin'
+      image:''
     }
   }
 
-  onInputchange =(event)=>{
-      console.log(event.target.value);
+  onInputChange =(event)=>{
+    this.setState({input: event.target.value});
   }
 
   onButtonSubmit = () => {
-    console.log('click');
+    this.setState({image: this.state.input});
+    app.models.predict("rdlxQ2kUnRiOkQO6wjjD", this.state.input)
+    
   }
 
-  onRouteChange= () =>{
+  onRouteChange= (route) =>{
+    if(route === 'back'){
+      this.setState({isAbout: false})
+    }
+    else if(route==='home'){
+      this.setState({isAbout: true})
+    }
     this.setState({route:'home'});
   }
   render(){
